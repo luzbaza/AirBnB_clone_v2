@@ -128,8 +128,7 @@ class HBNBCommand(cmd.Cmd):
         for i in arg_split[1:]:
             key, value = i.split('=')
             value = value.replace('_', ' ')
-            if hasattr(obj, key):
-                setattr(obj, key, eval(value))
+            setattr(obj, key, eval(value))
         print(obj.id)
         obj.save()
 
