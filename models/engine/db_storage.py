@@ -37,7 +37,7 @@ class DBStorage:
         dictionary = {}
         lista = []
         if cls is None:
-            types_obj = [State, City, User, Place]
+            types_obj = [State, City, User, Place, Review]
             for i in types_obj:
                 lista += self.__session.query(i).all()
 
