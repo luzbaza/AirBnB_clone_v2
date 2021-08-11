@@ -11,11 +11,11 @@ import os
 
 class State(BaseModel, Base):
     """ State class """
-    __tablename__ = 'State'
+    __tablename__ = 'states'
     name = Column(String(128), nullable=False)
 
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
-        cities= relationship('City', backref='State', cascade='all, delete')
+        cities= relationship('City', backref='state', cascade='all, delete')
 
     else:
         @property
