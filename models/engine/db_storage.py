@@ -35,16 +35,18 @@ class DBStorage:
     def all(self, cls=None):
         """show all instances"""
         dictionary = {}
+        lista = []
         if cls is None:
-            types_obj = [User, State, City, Amenity, Place, Review]
+            #types_obj = [User, State, City, Amenity, Place, Review]
+            types_obj = [State, City]
             for i in types_obj:
-                list = self.__session.query(i).all()
+                lista += self.__session.query(i).all()
 
         else:
-            list = self.__session.query(cls).all()
+            lista += self.__session.query(cls).all()
 
-        for obj in list:
-            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+        for obj in lista:
+            key = "{}.{}".format(obj.__class__.__name__, str(obj.id))
             dictionary[key] = obj
         return dictionary
 
