@@ -6,6 +6,7 @@ from console import HBNBCommand
 from io import StringIO
 from unittest.mock import patch
 
+
 class TConsole(unittest.TestCase):
     """ """
     def testDoCreate(self):
