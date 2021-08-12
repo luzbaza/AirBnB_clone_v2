@@ -124,6 +124,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         obj = HBNBCommand.classes[arg_split[0]]()
+        storage.save()
 
         for i in arg_split[1:]:
             key, value = i.split('=')
