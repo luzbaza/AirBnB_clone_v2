@@ -2,11 +2,12 @@
 """ """
 
 import sys
-sys.path.append('/home/klich/AirBnB_clone_v2/')
 from console import HBNBCommand
 import unittest
 from io import StringIO
 from unittest.mock import patch
+
+sys.path.append('/home/klich/AirBnB_clone_v2/')
 
 
 class TConsole(unittest.TestCase):
