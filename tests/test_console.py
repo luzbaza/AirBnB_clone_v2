@@ -2,17 +2,16 @@
 """ """
 
 import sys
-from console import HBNBCommand
 import unittest
 from io import StringIO
 from unittest.mock import patch
-
 sys.path.append('/home/klich/AirBnB_clone_v2/')
 
 
 class TConsole(unittest.TestCase):
     """ """
     def testDoCreate(self):
+        from console import HBNBCommand
         with patch('sys.stdout', new=StringIO()) as out:
             HBNBCommand().onecmd("create City name=\"California\"")
         city_id = out.getvalue()
