@@ -2,9 +2,8 @@
 """ Fabric script (based on the file 1-pack_web_static.py)
 that distributes an archive to your web servers"""
 
-import os.path
+import os
 from datetime import datetime
-import re
 from fabric.api import *
 
 env.host = ["34.138.245.151", "3.85.112.49"]
@@ -12,6 +11,18 @@ env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_rsa"
 env.warn_only = True
 
+def do_pack():
+    '''
+    script that generates a .tgz archive from the contents of the web_static
+    '''
+    try:
+        now_string = datetime.now().strftime('%Y%m%d%H%M%S')
+        filename = 'versions/web_static_' + now_string + '.tgz'
+        local('mkdir -p versions')
+        print('Packing web_static to {}'.format(filename))
+        local('tar -cvzf {} web_static'.format(filename))
+    except:
+        None
 
 def do_deploy(archive_path):
     """ distributes an archive to your web servers"""
