@@ -8,6 +8,9 @@ import re
 from fabric.api import *
 
 env.host = ["34.138.245.151", "3.85.112.49"]
+env.user = "ubuntu"
+env.key_filename = "~/.ssh/id_rsa"
+env.warn_only = True
 
 
 def do_deploy(archive_path):
@@ -21,31 +24,31 @@ def do_deploy(archive_path):
     result = put(archive_path, "/tmp/")
     if result.failed:
         return False
-    result = run('mkdir -p /data/web_static/releases/{:}'.format(
+    result = run('sudo mkdir -p /data/web_static/releases/{:}'.format(
         filename_noext))
     if result.failed:
         return False
-    result = run('tar -xzf /tmp/{:} -C /data/web_static/releases/{:}'.format(
+    result = run('sudo tar -xzf /tmp/{:} -C /data/web_static/releases/{:}'.format(
         archive_filename, filename_noext))
     if result.failed:
         return False
-    result = run('rm /tmp/{:}'.format(archive_filename))
+    result = run('sudo rm /tmp/{:}'.format(archive_filename))
     if result.failed:
         return False
-    result = run('mv /data/web_static/releases/{:}/web_static/* \
+    result = run('sudo mv /data/web_static/releases/{:}/web_static/* \
                 /data/web_static/releases/{:}/'.format(
         filename_noext, filename_noext))
     if result.failed:
         return False
-    result = run("rm -rf /data/web_static/releases/{:}/web_static".format(
+    result = run("sudo rm -rf /data/web_static/releases/{:}/web_static".format(
         filename_noext))
     if result.failed:
         return False
-    result = run('rm -rf /data/web_static/current')
+    result = run('sudo rm -rf /data/web_static/current')
     if result.failed:
         return False
     result = run(
-        'ln -s /data/web_static/releases/{:}/ /data/web_static/current'.format(
+        ' sudo ln -s /data/web_static/releases/{:}/ /data/web_static/current'.format(
             filename_noext))
     if result.failed:
         return False
