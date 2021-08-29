@@ -10,57 +10,42 @@ env.host = ["34.138.245.151", "3.85.112.49"]
 env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_rsa"
 env.warn_only = True
-
+ 
 def do_pack():
-    '''
-    script that generates a .tgz archive from the contents of the web_static
-    '''
-    try:
-        now_string = datetime.now().strftime('%Y%m%d%H%M%S')
-        filename = 'versions/web_static_' + now_string + '.tgz'
-        local('mkdir -p versions')
-        print('Packing web_static to {}'.format(filename))
-        local('tar -cvzf {} web_static'.format(filename))
-    except:
-        None
-
+    """Packs web_static into tgz"""
+    current_time = datetime.now().strftime("%Y%m%d%H%M%S")
+    file_path = "versions/web_static_" + current_time + ".tgz"
+    local("mkdir -p versions")
+    local("tar -cvzf " + file_path + " web_static")
+    if os.path.exists(file_path):
+        return file_path
+    else:
+        return None
+ 
+ 
 def do_deploy(archive_path):
-    """ distributes an archive to your web servers"""
-    if not os.path.exists(archive_path):
+    """Deploys archive to web servers"""
+    if not os.path.exists(archive_path) and not os.path.isfile(archive_path):
         return False
-    archive_list = archive_path.split(".")
-    archive_filename = archive_list[-1]
-    filename_list = archive_filename.split(".")
-    filename_noext = filename_list[0]
-    result = put(archive_path, "/tmp/")
-    if result.failed:
+ 
+    temp = archive_path.split('/')
+    temp0 = temp[1].split(".")
+    f = temp0[0]
+ 
+    try:
+        put(archive_path, '/tmp')
+        run("sudo mkdir -p /data/web_static/releases/" + f + "/")
+        run("sudo tar -xzf /tmp/" + f + ".tgz" +
+            " -C /data/web_static/releases/" + f + "/")
+        run("sudo rm /tmp/" + f + ".tgz")
+        run("sudo mv /data/web_static/releases/" + f +
+            "/web_static/* /data/web_static/releases/" + f + "/")
+        run("sudo rm -rf /data/web_static/releases/" + f + "/web_static")
+        run("sudo rm -rf /data/web_static/current")
+        run("sudo ln -s /data/web_static/releases/" + f +
+            "/ /data/web_static/current")
+        return True
+    except:
         return False
-    result = run('sudo mkdir -p /data/web_static/releases/{:}'.format(
-        filename_noext))
-    if result.failed:
-        return False
-    result = run('sudo tar -xzf /tmp/{:} -C /data/web_static/releases/{:}'.format(
-        archive_filename, filename_noext))
-    if result.failed:
-        return False
-    result = run('sudo rm /tmp/{:}'.format(archive_filename))
-    if result.failed:
-        return False
-    result = run('sudo mv /data/web_static/releases/{:}/web_static/* \
-                /data/web_static/releases/{:}/'.format(
-        filename_noext, filename_noext))
-    if result.failed:
-        return False
-    result = run("sudo rm -rf /data/web_static/releases/{:}/web_static".format(
-        filename_noext))
-    if result.failed:
-        return False
-    result = run('sudo rm -rf /data/web_static/current')
-    if result.failed:
-        return False
-    result = run(
-        ' sudo ln -s /data/web_static/releases/{:}/ /data/web_static/current'.format(
-            filename_noext))
-    if result.failed:
-        return False
+ 
     return True
