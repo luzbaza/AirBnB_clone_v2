@@ -38,7 +38,7 @@ def number(n):
 def number_template(n=None):
     """ display a HTML page only if n is an integer """
     if isinstance(n, int):
-        return render_template("5-number.htm", n=n)
+        return render_template('5-number.htm', n=n)
 
 
 if __name__ == "__main__":
